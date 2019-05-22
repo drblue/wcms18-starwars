@@ -12,6 +12,7 @@
  * Domain Path: /languages
  */
 
+require("swapi.php");
 require("class.StarWarsWidget.php");
 
 function wsw_widgets_init() {

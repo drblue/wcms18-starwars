@@ -40,17 +40,37 @@ class StarWarsWidget extends WP_Widget {
 		}
 
 		// content
-		$result = wp_remote_get('https://swapi.co/api/films/');
-		if ($result['response']['code'] === 200) {
-			$data = json_decode($result['body']);
+		$films = swapi_get_films();
+		if ($films) {
+			echo "<ul>";
+			foreach ($films as $film) {
+				$character_names = [];
+				foreach ($film->characters as $character_url) {
+					// $exploded_character_url = explode('/', $character_url);
+					// $character_id = $exploded_character_url[5];
 
-			if ($data->count > 0) {
-				echo "<ul>";
-				foreach ($data->results as $film) {
-					echo "<li>{$film->title} ($film->release_date)</li>";
+					$character_id = preg_replace('/[^0-9]/', '', $character_url);
+
+					$character = swapi_get_character($character_id);
+					array_push($character_names, $character->name);
 				}
-				echo "</ul>";
+				?>
+					<li>
+						<?php echo $film->title; ?><br>
+						<small>
+							Release date: <?php echo $film->release_date; ?><br>
+							Episode: <?php echo $film->episode_id; ?><br>
+							Characters: <?php echo implode(', ', $character_names); ?>
+							<!--
+							Species: <?php echo count($film->species); ?><br>
+							Vehicles: <?php echo count($film->vehicles); ?><br>
+							Planets visited: <?php echo count($film->planets); ?>
+							-->
+						</small>
+					</li>
+				<?php
 			}
+			echo "</ul>";
 		} else {
 			echo "Something went wrong. Try again?";
 		}
