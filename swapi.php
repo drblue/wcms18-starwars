@@ -3,6 +3,15 @@
  * Functions for communicating with the StarWars API
  */
 
+function swapi_get_url($url) {
+	$response = wp_remote_get($url);
+	if (is_wp_error($response)) {
+		return false;
+	}
+
+	return json_decode(wp_remote_retrieve_body($response));
+}
+
 function swapi_get_films() {
 	// do we have the films cached?
 	$films = get_transient('swapi_get_films');
@@ -12,17 +21,39 @@ function swapi_get_films() {
 		return $films;
 	} else {
 		// nope, retrieve the films from the StarWars API
-		$result = wp_remote_get('https://swapi.co/api/films/');
-
-		if (wp_remote_retrieve_response_code($result) === 200) {
-			$data = json_decode(wp_remote_retrieve_body($result));
-			$films = $data->results;
-			set_transient('swapi_get_films', $films, 60*60);
-
-			return $films;
-		} else {
+		$data = swapi_get_url('https://swapi.co/api/films/');
+		if (!$data) {
 			return false;
 		}
+		set_transient('swapi_get_films', $data->results, 60*60);
+
+		return $data->results;
+	}
+}
+
+function swapi_get_vehicles() {
+	// do we have the vehicles cached?
+	$vehicles = get_transient('swapi_get_vehicles');
+
+	if ($vehicles) {
+		// yep, let's return the cached vehicles
+		return $vehicles;
+	} else {
+		$items = [];
+		$url = 'https://swapi.co/api/vehicles/';
+		while ($url) {
+			$data = swapi_get_url($url);
+			if (!$data) {
+				return false;
+			}
+			$items = array_merge($items, $data->results);
+
+			$url = $data->next; // "https://swapi.co/" | null
+		}
+
+		// set_transient('swapi_get_vehicles', $items, 60*60);
+
+		return $items;
 	}
 }
 
@@ -34,18 +65,21 @@ function swapi_get_characters() {
 		// yep, let's return the cached characters
 		return $characters;
 	} else {
-		// nope, retrieve the characters from the StarWars API
-		$result = wp_remote_get('https://swapi.co/api/people/');
+		$items = [];
+		$url = 'https://swapi.co/api/characters/';
+		while ($url) {
+			$data = swapi_get_url($url);
+			if (!$data) {
+				return false;
+			}
+			$items = array_merge($items, $data->results);
 
-		if (wp_remote_retrieve_response_code($result) === 200) {
-			$data = json_decode(wp_remote_retrieve_body($result));
-			$characters = $data->results;
-			// set_transient('swapi_get_characters', $characters, 60*60);
-
-			return $characters;
-		} else {
-			return false;
+			$url = $data->next; // "https://swapi.co/" | null
 		}
+
+		// set_transient('swapi_get_characters', $items, 60*60);
+
+		return $items;
 	}
 }
 
@@ -58,16 +92,13 @@ function swapi_get_character($character_id) {
 		return $character;
 	} else {
 		// nope, retrieve the character from the StarWars API
-		$result = wp_remote_get('https://swapi.co/api/people/' . $character_id);
-
-		if (wp_remote_retrieve_response_code($result) === 200) {
-			$character = json_decode(wp_remote_retrieve_body($result));
-			set_transient('swapi_get_character_' . $character_id, $character, 60*60*24*7);
-
-			return $character;
-		} else {
+		$data = swapi_get_url('https://swapi.co/api/people/' . $character_id);
+		if (!$data) {
 			return false;
 		}
+		set_transient('swapi_get_character_' . $character_id, $data, 60*60*24*7);
+
+		return $data;
 	}
 }
 
