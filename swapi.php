@@ -26,6 +26,29 @@ function swapi_get_films() {
 	}
 }
 
+function swapi_get_characters() {
+	// do we have the characters cached?
+	$characters = get_transient('swapi_get_characters');
+
+	if ($characters) {
+		// yep, let's return the cached characters
+		return $characters;
+	} else {
+		// nope, retrieve the characters from the StarWars API
+		$result = wp_remote_get('https://swapi.co/api/people/');
+
+		if (wp_remote_retrieve_response_code($result) === 200) {
+			$data = json_decode(wp_remote_retrieve_body($result));
+			$characters = $data->results;
+			// set_transient('swapi_get_characters', $characters, 60*60);
+
+			return $characters;
+		} else {
+			return false;
+		}
+	}
+}
+
 function swapi_get_character($character_id) {
 	// do we have the films cached?
 	$character = get_transient('swapi_get_character_' . $character_id);
@@ -47,3 +70,4 @@ function swapi_get_character($character_id) {
 		}
 	}
 }
+
