@@ -40,32 +40,17 @@ class StarWarsWidget extends WP_Widget {
 		}
 
 		// content
-		$films = swapi_get_films();
-		if ($films) {
+		$vehicles = swapi_get_vehicles();
+		if ($vehicles) {
+			echo "<p>Total number of vehicles: " . count($vehicles) . "</p>";
 			echo "<ul>";
-			foreach ($films as $film) {
-				$character_names = [];
-				foreach ($film->characters as $character_url) {
-					// $exploded_character_url = explode('/', $character_url);
-					// $character_id = $exploded_character_url[5];
-
-					$character_id = preg_replace('/[^0-9]/', '', $character_url);
-
-					$character = swapi_get_character($character_id);
-					array_push($character_names, $character->name);
-				}
+			foreach ($vehicles as $vehicle) {
 				?>
 					<li>
-						<?php echo $film->title; ?><br>
+						<?php echo $vehicle->name; ?><br>
 						<small>
-							Release date: <?php echo $film->release_date; ?><br>
-							Episode: <?php echo $film->episode_id; ?><br>
-							Characters: <?php echo implode(', ', $character_names); ?>
-							<!--
-							Species: <?php echo count($film->species); ?><br>
-							Vehicles: <?php echo count($film->vehicles); ?><br>
-							Planets visited: <?php echo count($film->planets); ?>
-							-->
+							Manufacturer: <?php echo $vehicle->manufacturer; ?><br>
+							Model: <?php echo $vehicle->model; ?><br>
 						</small>
 					</li>
 				<?php
@@ -74,6 +59,66 @@ class StarWarsWidget extends WP_Widget {
 		} else {
 			echo "Something went wrong. Try again?";
 		}
+
+		/*
+		$films = swapi_get_films();
+		if ($films) {
+			echo "<p>Total number of films: " . count($films) . "</p>";
+			echo "<ul>";
+			foreach ($films as $film) {
+				?>
+					<li>
+						<?php echo $film->title; ?><br>
+						<small>
+							Release date: <?php echo $film->release_date; ?><br>
+							Episode: <?php echo $film->episode_id; ?><br>
+							Species: <?php echo count($film->species); ?><br>
+							Vehicles: <?php echo count($film->vehicles); ?><br>
+							Planets visited: <?php echo count($film->planets); ?>
+						</small>
+					</li>
+				<?php
+			}
+			echo "</ul>";
+		} else {
+			echo "Something went wrong. Try again?";
+		}
+		*/
+
+		/*
+		$characters = swapi_get_characters();
+		if ($characters) {
+			echo "<p>Total number of characters: " . count($characters) . "</p>";
+			echo "<ul>";
+			foreach ($characters as $character) {
+				?>
+					<li>
+						<?php echo $character->name; ?><br>
+						<small>
+							Birth year: <?php echo $character->birth_year; ?><br>
+							Height: <?php echo $character->height; ?> cm<br>
+							Mass: <?php echo $character->mass; ?> kg<br>
+						</small>
+					</li>
+				<?php
+			}
+			echo "</ul>";
+		} else {
+			echo "Something went wrong. Try again?";
+		}
+		*/
+
+		/*
+		$luke = swapi_get_character(1);
+		echo "Luke is {$luke->height} cm tall.<br>";
+
+		$someone = swapi_get_character(2);
+		echo "{$someone->name} is {$someone->height} cm tall.<br>";
+
+		$id = 4;
+		$a_vehicle = swapi_get_vehicle($id);
+		echo "Vehicle {$id}'s name is <strong>{$a_vehicle->name}</strong> and manufactured by {$a_vehicle->manufacturer} of model {$a_vehicle->model}. Say hi!<br>";
+		*/
 
 		// close widget
 		echo $after_widget;
