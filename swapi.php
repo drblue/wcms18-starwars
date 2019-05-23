@@ -12,6 +12,21 @@ function swapi_get_url($url) {
 	return json_decode(wp_remote_retrieve_body($response));
 }
 
+function swapi_get($endpoint) {
+	$items = [];
+	$url = "https://swapi.co/api/{$endpoint}/";
+	while ($url) {
+		$data = swapi_get_url($url);
+		if (!$data) {
+			return false;
+		}
+		$items = array_merge($items, $data->results);
+
+		$url = $data->next; // "https://swapi.co/" | null
+	}
+	return $items;
+}
+
 function swapi_get_films() {
 	// do we have the films cached?
 	$films = get_transient('swapi_get_films');
@@ -21,13 +36,10 @@ function swapi_get_films() {
 		return $films;
 	} else {
 		// nope, retrieve the films from the StarWars API
-		$data = swapi_get_url('https://swapi.co/api/films/');
-		if (!$data) {
-			return false;
-		}
-		set_transient('swapi_get_films', $data->results, 60*60);
+		$items = swapi_get('films');
+		set_transient('swapi_get_films', $items, 60*60);
 
-		return $data->results;
+		return $items;
 	}
 }
 
@@ -39,19 +51,8 @@ function swapi_get_vehicles() {
 		// yep, let's return the cached vehicles
 		return $vehicles;
 	} else {
-		$items = [];
-		$url = 'https://swapi.co/api/vehicles/';
-		while ($url) {
-			$data = swapi_get_url($url);
-			if (!$data) {
-				return false;
-			}
-			$items = array_merge($items, $data->results);
-
-			$url = $data->next; // "https://swapi.co/" | null
-		}
-
-		// set_transient('swapi_get_vehicles', $items, 60*60);
+		$items = swapi_get('vehicles');
+		set_transient('swapi_get_vehicles', $items, 60*60);
 
 		return $items;
 	}
@@ -65,19 +66,8 @@ function swapi_get_characters() {
 		// yep, let's return the cached characters
 		return $characters;
 	} else {
-		$items = [];
-		$url = 'https://swapi.co/api/characters/';
-		while ($url) {
-			$data = swapi_get_url($url);
-			if (!$data) {
-				return false;
-			}
-			$items = array_merge($items, $data->results);
-
-			$url = $data->next; // "https://swapi.co/" | null
-		}
-
-		// set_transient('swapi_get_characters', $items, 60*60);
+		$items = swapi_get('people');
+		set_transient('swapi_get_characters', $items, 60*60);
 
 		return $items;
 	}
