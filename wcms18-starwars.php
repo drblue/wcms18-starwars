@@ -21,9 +21,17 @@ function wsw_widgets_init() {
 add_action('widgets_init', 'wsw_widgets_init');
 
 /**
+ * Enqueue of CSS-styles and JavaScript
+ */
+function wsw_enqueue_scripts() {
+	wp_enqueue_style('wcms18-starwars', plugin_dir_url(__FILE__) . 'css/wcms18-starwars.css');
+
+	wp_enqueue_script('wcms18-starwars', plugin_dir_url(__FILE__) . 'js/wcms18-starwars.js', ['jquery'], false, true);
+}
+add_action('wp_enqueue_scripts', 'wsw_enqueue_scripts');
+
+/**
  * Respond to AJAX-query for 'action: get_starwars_vehicles'
- *
- *
  */
 function wsw_ajax_get_starwars_vehicles() {
 	$vehicles = swapi_get_vehicles();

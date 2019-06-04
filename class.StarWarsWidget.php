@@ -40,88 +40,11 @@ class StarWarsWidget extends WP_Widget {
 		}
 
 		// content
-		$vehicles = swapi_get_vehicles();
-		$json_vehicles = json_encode($vehicles);
-		echo $json_vehicles;
-
-		if ($vehicles) {
-			echo "<p>Total number of vehicles: " . count($vehicles) . "</p>";
-			echo "<ul>";
-			foreach ($vehicles as $vehicle) {
-				?>
-					<li>
-						<?php echo $vehicle->name; ?><br>
-						<small>
-							Manufacturer: <?php echo $vehicle->manufacturer; ?><br>
-							Model: <?php echo $vehicle->model; ?><br>
-						</small>
-					</li>
-				<?php
-			}
-			echo "</ul>";
-		} else {
-			echo "Something went wrong. Try again?";
-		}
-
-		/*
-		$films = swapi_get_films();
-		if ($films) {
-			echo "<p>Total number of films: " . count($films) . "</p>";
-			echo "<ul>";
-			foreach ($films as $film) {
-				?>
-					<li>
-						<?php echo $film->title; ?><br>
-						<small>
-							Release date: <?php echo $film->release_date; ?><br>
-							Episode: <?php echo $film->episode_id; ?><br>
-							Species: <?php echo count($film->species); ?><br>
-							Vehicles: <?php echo count($film->vehicles); ?><br>
-							Planets visited: <?php echo count($film->planets); ?>
-						</small>
-					</li>
-				<?php
-			}
-			echo "</ul>";
-		} else {
-			echo "Something went wrong. Try again?";
-		}
-		*/
-
-		/*
-		$characters = swapi_get_characters();
-		if ($characters) {
-			echo "<p>Total number of characters: " . count($characters) . "</p>";
-			echo "<ul>";
-			foreach ($characters as $character) {
-				?>
-					<li>
-						<?php echo $character->name; ?><br>
-						<small>
-							Birth year: <?php echo $character->birth_year; ?><br>
-							Height: <?php echo $character->height; ?> cm<br>
-							Mass: <?php echo $character->mass; ?> kg<br>
-						</small>
-					</li>
-				<?php
-			}
-			echo "</ul>";
-		} else {
-			echo "Something went wrong. Try again?";
-		}
-		*/
-
-		/*
-		$luke = swapi_get_character(1);
-		echo "Luke is {$luke->height} cm tall.<br>";
-
-		$someone = swapi_get_character(2);
-		echo "{$someone->name} is {$someone->height} cm tall.<br>";
-
-		$id = 4;
-		$a_vehicle = swapi_get_vehicle($id);
-		echo "Vehicle {$id}'s name is <strong>{$a_vehicle->name}</strong> and manufactured by {$a_vehicle->manufacturer} of model {$a_vehicle->model}. Say hi!<br>";
-		*/
+		?>
+			<div class="content">
+				<span class="loading">Loading...</span>
+			</div>
+		<?php
 
 		// close widget
 		echo $after_widget;
