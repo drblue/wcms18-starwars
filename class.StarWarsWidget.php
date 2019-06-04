@@ -41,6 +41,9 @@ class StarWarsWidget extends WP_Widget {
 
 		// content
 		$vehicles = swapi_get_vehicles();
+		$json_vehicles = json_encode($vehicles);
+		echo $json_vehicles;
+
 		if ($vehicles) {
 			echo "<p>Total number of vehicles: " . count($vehicles) . "</p>";
 			echo "<ul>";
