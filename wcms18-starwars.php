@@ -27,6 +27,9 @@ function wsw_enqueue_scripts() {
 	wp_enqueue_style('wcms18-starwars', plugin_dir_url(__FILE__) . 'css/wcms18-starwars.css');
 
 	wp_enqueue_script('wcms18-starwars', plugin_dir_url(__FILE__) . 'js/wcms18-starwars.js', ['jquery'], false, true);
+	wp_localize_script('wcms18-starwars', 'wsw_ajax_obj', [
+		'ajax_url' => admin_url('admin-ajax.php'),
+	]);
 }
 add_action('wp_enqueue_scripts', 'wsw_enqueue_scripts');
 

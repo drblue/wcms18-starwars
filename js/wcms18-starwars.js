@@ -6,10 +6,13 @@
 			console.log("Widget " + i + ":", widget);
 
 			$.post(
-				'someurl',  // URL to POST to
-				{}  // DATA to send to the URL
+				wsw_ajax_obj.ajax_url,  // URL to POST to
+				{
+					action: 'get_starwars_vehicles'
+				}  // DATA to send to the URL
 			).done(function(response){
-				console.log("Got response", response);
+				var content = $(widget).find('.content');
+				$(content).html('<strong>Number of vehicles in all films:</strong> ' + response.length);
 			}).fail(function(error){
 				console.log("Something went wrong!", error);
 			});
